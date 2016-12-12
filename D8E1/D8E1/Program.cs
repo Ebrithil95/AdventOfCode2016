@@ -29,9 +29,37 @@ namespace D8E1 {
 
 		private static void ShiftRow(int row, int amount) {
 			amount = amount % 50;
-			for (int i = 0; i < amount; i++) {
+			bool[] tmp = new bool[50];
 
+			for (int i = 0; i < 50; i++) {
+				tmp[(i + amount) % 50] = display[row, i];
 			}
+
+			for (int i = 0; i < 50; i++) {
+				display[row, i] = tmp[i];
+			}
+		}
+
+		private static void ShiftColumn(int column, int amount) {
+			amount = amount % 6;
+			bool[] tmp = new bool[6];
+
+			for (int i = 0; i < 6; i++) {
+				tmp[(i + amount) % 6] = display[i, column];
+			}
+
+			for (int i = 0; i < 6; i++) {
+				display[i, column] = tmp[i];
+			}
+		}
+
+		private static int GetLitPixelAmount() {
+			int amount = 0;
+			foreach(bool b in display) {
+				if (b) amount++;
+			}
+
+			return amount;
 		}
 
 		private static void ProcessInput() {
@@ -46,16 +74,15 @@ namespace D8E1 {
 						Light(int.Parse(parameters[0]), int.Parse(parameters[1]));
 					} else if (commands[0].Equals("rotate")) {
 						if (commands[1].Equals("row")) {
-							ShiftRow(0, 2);
+							ShiftRow(int.Parse(commands[2].Substring(2)), int.Parse(commands[4]));
 						} else if (commands[1].Equals("column")) {
-
+							ShiftColumn(int.Parse(commands[2].Substring(2)), int.Parse(commands[4]));
 						}
 					}
 
 				}
 				sr.Close();
 			} catch (Exception e) {
-				Console.WriteLine("Couldn't open the input file:");
 				Console.WriteLine(e.Message);
 			}
 		}
@@ -64,6 +91,7 @@ namespace D8E1 {
 		static void Main(string[] args) {
 			ProcessInput();
 			PrintDisplay();
+			Console.WriteLine(GetLitPixelAmount() + " Pixels are Lit.");
 		}
 	}
 }
