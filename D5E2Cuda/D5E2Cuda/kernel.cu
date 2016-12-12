@@ -11,32 +11,6 @@ __global__ void addKernel(int *c, const int *a, const int *b)
     c[i] = a[i] + b[i];
 }
 
-__global__ void Parallel_isPrime(const unsigned long long int * input, unsigned long long int * output) {
-	int tid = threadIdx.x;
-	int dib = blockIdx.x;
-
-	int index = (dib * input[1]) + tid;
-	unsigned long long int num = input[0];
-
-	//new method
-	if ((tid % 2) == 0)
-		num += (((dib * input[1]) + tid) / 2) * 6;
-	else
-		num += ((((dib * input[1]) + (tid - 1)) / 2) * 6) + 2;
-
-	//find the maximum number to loop through
-	unsigned long long int max = rint(sqrt((double)num));
-	output[index] = num;
-
-	for (unsigned long long int i = 3; i <= max; i += 2) {
-		if ((num % i) == 0) {
-			output[index] = 0;
-			break;
-		}
-	}
-}
-
-
 int main()
 {
     const int arraySize = 5;
